@@ -1,0 +1,113 @@
+import "oaidl.idl";
+import "ocidl.idl";
+import "unknwn.idl";
+
+//////////////////////////////////////////////////////////////////////////
+// Тип объекта
+
+enum ObjectType
+{
+	// целый
+	otInt,
+
+	// вещественный
+	otDouble,
+
+	// массив
+	otArray
+};
+
+//////////////////////////////////////////////////////////////////////////
+// Объект - значение произвольного типа (предварительное объявление)
+
+struct Object
+{
+	// тип объекта
+	enum ObjectType Type;
+
+	[switch_is (Type)] union
+	{
+		// значение целого типа
+		[case (otInt)] int Int;
+
+		// значение вещественного типа
+		[case (otDouble)] double Double;
+
+		// значение типа "массив"
+		[case (otArray)] struct ObjectArray *Array;
+	} Value;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// ObjectArray - Массив значений Object
+
+struct ObjectArray
+{
+	// элементы массива
+	struct Object *Data;
+
+	// количество элементов массива
+	unsigned Count;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// Интерфейс коллекции
+
+[
+	object,
+	uuid(37F7727A-0174-4F2B-ADE9-271B949AA229),
+	helpstring("ICollection Interface")
+]
+interface ICollection : IUnknown
+{
+	// добавить элемент в коллекцию
+	HRESULT Add([in] struct Object obj);
+
+	// удалить элемент из коллекции
+	HRESULT Remove([in] struct Object obj) ;
+
+	// получить количество элементов коллекции
+	HRESULT GetCount([out] unsigned *count);
+
+	// преобразовать коллекцию в массив
+	HRESULT ToArray([out] struct ObjectArray **arr);
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+// Интерфейс перечислителя
+
+[
+	object,
+	uuid(7BAAB13D-AC13-484C-A1A0-132B28136425),
+	helpstring("IEnumenator Interface")
+]
+interface IEnumerator : IUnknown
+{
+	// возврат в исходное состояние
+	HRESULT Reset();
+
+	// переход к следующему элементу
+	HRESULT MoveNext([out] int *result);
+
+	// получить текущий элемент
+	HRESULT GetCurrent([out] struct Object *obj);
+};
+
+[
+	uuid(BEACCE64-FBD5-4E27-8159-0D2BBFC26CF3),
+	version(1.0),
+	helpstring("help pls")
+]
+library lib
+{
+	[
+		uuid(A324528D-8BB8-43E2-90BA-7C972A084FA1),
+		helpstring("Components Class")
+	]
+	coclass CList
+	{
+		[default] interface ICollection;
+		interface IEnumerator;
+	};
+}

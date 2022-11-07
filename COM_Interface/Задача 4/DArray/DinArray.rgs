@@ -1,0 +1,16 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {F55750AA-AE07-4348-A687-A1BE61989760} = s 'DinArray Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{A583DC01-1916-42E1-A882-992F98F8BD19}'
+			Version = s '1.0'
+		}
+	}
+}

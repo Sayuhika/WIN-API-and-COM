@@ -1,0 +1,39 @@
+// DArray.idl: источник IDL для DArray
+//
+
+// Этот файл будет обработан средством MIDL для
+// создания библиотеки типов (DArray.tlb) и кода маршалирования.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(0A8F8AEA-B1A0-4667-837F-1091E19D8CA3),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IDinArray : IDispatch{
+	[id(1)] HRESULT Add([in] DOUBLE value);
+	[id(2)] HRESULT Remove([in] DOUBLE value);
+	[id(3)] HRESULT GetData([out, retval] SAFEARRAY(double)* arr);
+	[propget, id(4)] HRESULT count([out, retval] ULONG* pVal);
+	[propget, id(5)] HRESULT mean([out, retval] DOUBLE* pVal);
+};
+[
+	uuid(A583DC01-1916-42E1-A882-992F98F8BD19),
+	version(1.0),
+]
+library DArrayLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(F55750AA-AE07-4348-A687-A1BE61989760)		
+	]
+	coclass DinArray
+	{
+		[default] interface IDinArray;
+	};
+};
+
